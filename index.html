@@ -66,7 +66,7 @@
     .account-list{display:grid;gap:10px}.account{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--line)}.account:last-child{border-bottom:0}
     .account-main{display:flex;align-items:center;gap:11px}.account-icon{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-size:17px}.account-name{font-weight:700;font-size:13px}.account-meta{font-size:11px;color:var(--muted);margin-top:2px}.account-balance{font-family:"DM Mono";font-size:13px;font-weight:500}
     .budget-row{margin-top:15px}.budget-label{display:flex;justify-content:space-between;font-size:12px;margin-bottom:7px}.progress{height:8px;background:#eef1ed;border-radius:99px;overflow:hidden}.progress i{display:block;height:100%;border-radius:inherit;background:var(--orange)}
-    .transactions{margin-top:18px}.transaction-list{display:grid}.tx{display:grid;grid-template-columns:40px 1fr auto;gap:12px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line)}.tx:last-child{border-bottom:0}.tx-icon{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-size:17px}.tx-title{font-size:13px;font-weight:700}.tx-meta{font-size:11px;color:var(--muted);margin-top:2px}.tx-amount{font-family:"DM Mono";font-size:13px;font-weight:500}.income{color:var(--mint-deep)}.expense{color:#d56d58}
+    .transactions{margin-top:18px}.transaction-list{display:grid}.tx{display:grid;grid-template-columns:40px 1fr auto;gap:12px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line)}.tx:last-child{border-bottom:0}.tx-icon{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-size:17px}.tx-title{font-size:13px;font-weight:700}.tx-meta{font-size:11px;color:var(--muted);margin-top:2px}.tx-amount{font-family:"DM Mono";font-size:13px;font-weight:500}.income{color:var(--mint-deep)}.expense{color:#d56d58}.neutral{color:#65757a}
     .table-wrap{overflow:auto}.table{width:100%;border-collapse:collapse;font-size:12px}.table th{text-align:left;color:var(--muted);font-weight:600;padding:0 0 10px;border-bottom:1px solid var(--line)}.table td{padding:13px 0;border-bottom:1px solid var(--line);white-space:nowrap}.table tr:last-child td{border-bottom:0}.pill{font-size:10px;padding:4px 8px;border-radius:99px;background:#eef7f1;color:var(--mint-deep);font-weight:700}.pill.exp{background:#fff0ec;color:#cc6e59}.view-all{border:0;background:transparent;color:var(--mint-deep);font-weight:700;font-size:12px}
     .page{display:none}.page.active{display:block}.list-toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:18px}.search-box{flex:1;min-width:220px;position:relative}.search-box input{width:100%;padding:12px 14px 12px 38px;border:1px solid var(--line);background:#fff;border-radius:13px;color:var(--ink);outline:0}.search-box span{position:absolute;left:14px;top:10px;color:var(--muted)}.filter-select{padding:12px 14px;border:1px solid var(--line);background:#fff;border-radius:13px;color:var(--ink)}.result-count{font-size:12px;color:var(--muted);margin-left:auto}.full-table th,.full-table td{padding-right:18px}.full-table th:last-child,.full-table td:last-child{padding-right:0;text-align:right}.action-row{display:flex;justify-content:flex-end;gap:7px}.table-action{border:1px solid var(--line);background:#fff;border-radius:9px;padding:7px 9px;font-size:11px;color:var(--ink)}.table-action:hover{border-color:var(--mint-deep);color:var(--mint-deep)}.empty-state{text-align:center;padding:40px 12px;color:var(--muted);font-size:13px}
     .pagination{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:18px}.page-btn{border:1px solid var(--line);background:#fff;color:var(--ink);min-width:34px;height:34px;border-radius:10px;font-size:12px}.page-btn.active{background:var(--ink);border-color:var(--ink);color:#fff}.page-btn:disabled{opacity:.4;cursor:default}
@@ -135,7 +135,7 @@
           <div class="panel-head"><div><h3 class="panel-title">รายการทั้งหมด</h3><p class="panel-sub">ค้นหา ตรวจสอบ และแก้ไขรายการเงินเข้าออกของคุณ</p></div><button class="primary" id="addBtn2">+ เพิ่มรายการ</button></div>
           <div class="list-toolbar">
             <div class="search-box"><span>⌕</span><input id="searchInput" placeholder="ค้นหาจากรายละเอียดหรือหมวดหมู่..." /></div>
-            <select class="filter-select" id="typeFilter"><option value="all">ทุกประเภท</option><option value="income">รายรับ</option><option value="expense">รายจ่าย</option></select>
+            <select class="filter-select" id="typeFilter"><option value="all">ทุกประเภท</option><option value="income">รายรับจริง</option><option value="expense">รายจ่ายจริง</option><option value="company_advance">เงินบริษัท</option><option value="company_purchase">ซื้อแทนบริษัท</option><option value="transfer">โอนระหว่างบัญชี</option></select>
             <select class="filter-select" id="categoryFilter"><option value="all">ทุกหมวดหมู่</option></select>
             <span class="result-count" id="resultCount"></span>
           </div>
@@ -152,11 +152,11 @@
         <div class="grid stock-grid">
           <div class="card panel">
             <div class="panel-head"><div><h3 class="panel-title">รายการซื้อขายหุ้น</h3><p class="panel-sub">บันทึกการซื้อและขายหุ้นในพอร์ต</p></div><button class="primary" id="addTradeBtn">+ เพิ่มรายการซื้อขาย</button></div>
-            <div class="table-wrap"><table class="table stock-table"><thead><tr><th>วันที่</th><th>หุ้น</th><th>รายการ</th><th>จำนวน</th><th>ราคา</th><th>มูลค่า</th></tr></thead><tbody id="tradeBody"></tbody></table></div>
+            <div class="table-wrap"><table class="table stock-table"><thead><tr><th>วันที่</th><th>หุ้น</th><th>รายการ</th><th>จำนวน</th><th>ราคา (USD)</th><th>มูลค่า (USD / บาท)</th></tr></thead><tbody id="tradeBody"></tbody></table></div>
           </div>
           <div class="card panel">
             <div class="panel-head"><div><h3 class="panel-title">เงินปันผลจาก Dime</h3><p class="panel-sub">ติดตามเงินปันผลที่ได้รับเข้าบัญชี</p></div><button class="primary" id="addDividendBtn">+ รับเงินปันผล</button></div>
-            <div class="table-wrap"><table class="table stock-table"><thead><tr><th>วันที่</th><th>หุ้น</th><th>สุทธิ (บาท)</th></tr></thead><tbody id="dividendBody"></tbody></table></div>
+            <div class="table-wrap"><table class="table stock-table"><thead><tr><th>วันที่</th><th>หุ้น</th><th>สุทธิ (USD)</th><th>สุทธิ (บาท)</th></tr></thead><tbody id="dividendBody"></tbody></table></div>
           </div>
         </div>
       </div>
@@ -210,13 +210,13 @@
   </div>
 
   <div class="modal" id="modal"><div class="modal-card"><div class="modal-head"><h3 id="modalTitle">เพิ่มรายการใหม่</h3><button class="icon-btn" id="closeModal">×</button></div>
-    <form id="txForm"><div class="form-grid"><div class="field"><label>ประเภท</label><select id="txType"><option value="expense">รายจ่าย</option><option value="income">รายรับ</option></select></div><div class="field"><label>วันที่</label><input id="txDate" type="date" required /></div><div class="field"><label>หมวดหมู่</label><select id="txCategory"><option>อาหารและเครื่องดื่ม</option><option>เดินทาง</option><option>ช้อปปิ้ง</option><option>บ้านและสาธารณูปโภค</option><option>เงินเดือน</option><option>รายได้เสริม</option></select></div><div class="field"><label>จำนวนเงิน (บาท)</label><input id="txAmount" type="number" min="0" step="0.01" placeholder="0.00" required /></div><div class="field full"><label>บันทึกช่วยจำ</label><input id="txNote" placeholder="เช่น ค่าอาหารกลางวัน" /></div></div><div class="modal-foot"><button type="button" class="ghost" id="cancelModal">ยกเลิก</button><button class="primary" type="submit">บันทึกรายการ</button></div></form>
+    <form id="txForm"><div class="form-grid"><div class="field"><label>ประเภท</label><select id="txType"><option value="expense">รายจ่ายจริง</option><option value="income">รายรับจริง</option><option value="company_advance">รับเงินบริษัทเพื่อซื้อของ</option><option value="company_purchase">ซื้อของแทนบริษัท</option><option value="transfer">โอนเงินระหว่างบัญชี</option></select></div><div class="field"><label>วันที่</label><input id="txDate" type="date" required /></div><div class="field"><label>หมวดหมู่</label><select id="txCategory"><option>อาหารและเครื่องดื่ม</option><option>เดินทาง</option><option>ช้อปปิ้ง</option><option>บ้านและสาธารณูปโภค</option><option>เงินเดือน</option><option>รายได้เสริม</option><option>ค่าใช้จ่ายบริษัท</option><option>โอนระหว่างบัญชี</option></select></div><div class="field"><label>จำนวนเงิน (บาท)</label><input id="txAmount" type="number" min="0" step="0.01" placeholder="0.00" required /></div><div class="field" id="fromAccountField"><label>จากบัญชี</label><select id="txFromAccount"><option>ธนาคารกสิกรไทย</option><option>เงินสดในกระเป๋า</option><option>TrueMoney Wallet</option><option>บัตรเครดิต KTC</option><option>บัญชีบริษัท</option></select></div><div class="field" id="toAccountField"><label>ไปยังบัญชี</label><select id="txToAccount"><option>เงินสดในกระเป๋า</option><option>ธนาคารกสิกรไทย</option><option>TrueMoney Wallet</option><option>บัตรเครดิต KTC</option><option>บัญชีบริษัท</option></select></div><div class="field full"><label>บันทึกช่วยจำ</label><input id="txNote" placeholder="เช่น รับเงินบริษัทเพื่อซื้ออุปกรณ์" /></div></div><div class="modal-foot"><button type="button" class="ghost" id="cancelModal">ยกเลิก</button><button class="primary" type="submit">บันทึกรายการ</button></div></form>
   </div></div>
   <div class="modal" id="stockModal"><div class="modal-card"><div class="modal-head"><h3 id="stockModalTitle">เพิ่มรายการซื้อขายหุ้น</h3><button class="icon-btn" id="closeStockModal">×</button></div>
-    <form id="stockForm"><div class="form-grid"><div class="field"><label>ประเภท</label><select id="tradeType"><option value="buy">ซื้อ</option><option value="sell">ขาย</option></select></div><div class="field"><label>วันที่</label><input id="tradeDate" type="date" required /></div><div class="field"><label>ชื่อหุ้น</label><input id="tradeSymbol" placeholder="เช่น AAPL" required /></div><div class="field"><label>จำนวนหุ้น</label><input id="tradeQty" type="number" min="0" step="1" required /></div><div class="field"><label>ราคาต่อหุ้น (บาท)</label><input id="tradePrice" type="number" min="0" step="0.01" required /></div><div class="field full"><label>หมายเหตุ</label><input id="tradeNote" placeholder="เช่น ซื้อสะสมระยะยาว" /></div></div><div class="modal-foot"><button type="button" class="ghost" id="cancelStockModal">ยกเลิก</button><button class="primary" type="submit">บันทึกรายการ</button></div></form>
+    <form id="stockForm"><div class="form-grid"><div class="field"><label>ประเภท</label><select id="tradeType"><option value="buy">ซื้อ</option><option value="sell">ขาย</option></select></div><div class="field"><label>วันที่</label><input id="tradeDate" type="date" required /></div><div class="field"><label>ชื่อหุ้น</label><input id="tradeSymbol" placeholder="เช่น AAPL" required /></div><div class="field"><label>จำนวนหุ้น</label><input id="tradeQty" type="number" min="0" step="0.0001" required /></div><div class="field"><label>ราคาต่อหุ้น (USD)</label><input id="tradePrice" type="number" min="0" step="0.0001" required /></div><div class="field"><label>อัตราแลกเปลี่ยน USD/THB</label><input id="tradeFxRate" type="number" min="0" step="0.0001" value="32.50" required /></div><div class="field full"><label>หมายเหตุ</label><input id="tradeNote" placeholder="เช่น ซื้อผ่าน Dime" /></div></div><div class="modal-foot"><button type="button" class="ghost" id="cancelStockModal">ยกเลิก</button><button class="primary" type="submit">บันทึกรายการ</button></div></form>
   </div></div>
   <div class="modal" id="dividendModal"><div class="modal-card"><div class="modal-head"><h3>บันทึกเงินปันผล Dime</h3><button class="icon-btn" id="closeDividendModal">×</button></div>
-    <form id="dividendForm"><div class="form-grid"><div class="field"><label>วันที่ได้รับ</label><input id="dividendDate" type="date" required /></div><div class="field"><label>ชื่อหุ้น</label><input id="dividendSymbol" placeholder="เช่น MSFT" required /></div><div class="field"><label>เงินปันผลก่อนหักภาษี (บาท)</label><input id="dividendGross" type="number" min="0" step="0.01" required /></div><div class="field"><label>ภาษีหัก ณ ที่จ่าย (บาท)</label><input id="dividendTax" type="number" min="0" step="0.01" value="0" /></div><div class="field full"><label>หมายเหตุ</label><input id="dividendNote" placeholder="เช่น เงินปันผลเข้าพอร์ต Dime" /></div></div><div class="modal-foot"><button type="button" class="ghost" id="cancelDividendModal">ยกเลิก</button><button class="primary" type="submit">บันทึกเงินปันผล</button></div></form>
+    <form id="dividendForm"><div class="form-grid"><div class="field"><label>วันที่ได้รับ</label><input id="dividendDate" type="date" required /></div><div class="field"><label>ชื่อหุ้น</label><input id="dividendSymbol" placeholder="เช่น MSFT" required /></div><div class="field"><label>เงินปันผลก่อนภาษี (USD)</label><input id="dividendGross" type="number" min="0" step="0.0001" required /></div><div class="field"><label>ภาษีหัก (USD)</label><input id="dividendTax" type="number" min="0" step="0.0001" value="0" /></div><div class="field"><label>อัตราแลกเปลี่ยน USD/THB</label><input id="dividendFxRate" type="number" min="0" step="0.0001" value="32.50" required /></div><div class="field full"><label>หมายเหตุ</label><input id="dividendNote" placeholder="เช่น เงินปันผลเข้าพอร์ต Dime" /></div></div><div class="modal-foot"><button type="button" class="ghost" id="cancelDividendModal">ยกเลิก</button><button class="primary" type="submit">บันทึกเงินปันผล</button></div></form>
   </div></div>
   <div class="modal" id="reminderModal"><div class="modal-card"><div class="modal-head"><h3>เพิ่มการเตือนความจำ</h3><button class="icon-btn" id="closeReminderModal">×</button></div>
     <form id="reminderForm"><div class="form-grid"><div class="field"><label>วันที่</label><input id="reminderDate" type="date" required /></div><div class="field"><label>เวลา</label><input id="reminderTime" type="time" value="09:00" /></div><div class="field full"><label>หัวข้อ</label><input id="reminderTitle" placeholder="เช่น วันครบกำหนดบัตรเครดิต" required /></div><div class="field full"><label>รายละเอียด</label><input id="reminderNote" placeholder="รายละเอียดเพิ่มเติม" /></div></div><div class="modal-foot"><button type="button" class="ghost" id="cancelReminderModal">ยกเลิก</button><button class="primary" type="submit">บันทึกการเตือน</button></div></form>
@@ -236,14 +236,14 @@
         {type:'expense',category:'ช้อปปิ้ง',note:'ของใช้เข้าบ้าน',date:'2026-09-23',amount:1450}
       ],
       trades:[
-        {date:'2026-09-29',symbol:'AAPL',type:'buy',qty:10,price:6120,note:'ซื้อสะสม'},
-        {date:'2026-09-24',symbol:'NVDA',type:'buy',qty:5,price:4180,note:'เพิ่มสัดส่วนเทคโนโลยี'},
-        {date:'2026-09-18',symbol:'MSFT',type:'sell',qty:3,price:14250,note:'ทำกำไรบางส่วน'}
+        {date:'2026-09-29',symbol:'AAPL',type:'buy',qty:10,priceUsd:188,fxRate:32.5,note:'ซื้อสะสม'},
+        {date:'2026-09-24',symbol:'NVDA',type:'buy',qty:5,priceUsd:128.62,fxRate:32.5,note:'เพิ่มสัดส่วนเทคโนโลยี'},
+        {date:'2026-09-18',symbol:'MSFT',type:'sell',qty:3,priceUsd:445,fxRate:32.5,note:'ทำกำไรบางส่วน'}
       ],
       dividends:[
-        {date:'2026-09-20',symbol:'AAPL',gross:1850,tax:185,note:'Dime dividend'},
-        {date:'2026-08-28',symbol:'MSFT',gross:1320,tax:132,note:'Dime dividend'},
-        {date:'2026-07-15',symbol:'O',gross:4480,tax:448,note:'Dime dividend'}
+        {date:'2026-09-20',symbol:'AAPL',grossUsd:56.92,taxUsd:5.69,fxRate:32.5,note:'Dime dividend'},
+        {date:'2026-08-28',symbol:'MSFT',grossUsd:40.62,taxUsd:4.06,fxRate:32.5,note:'Dime dividend'},
+        {date:'2026-07-15',symbol:'O',grossUsd:137.85,taxUsd:13.78,fxRate:32.5,note:'Dime dividend'}
       ],
       reminders:[
         {date:'2026-09-30',time:'09:00',title:'สรุปรายรับรายจ่ายประจำเดือน',note:'ตรวจสอบรายการก่อนปิดเดือน'},
@@ -267,6 +267,8 @@
         if(Number.isInteger(saved.transactionPage)) state.transactionPage=saved.transactionPage;
       }
     }catch(err){}
+    state.trades=state.trades.map(t=>t.priceUsd===undefined?({...t,priceUsd:Number(t.price||0)/32.5,fxRate:32.5}):t);
+    state.dividends=state.dividends.map(d=>d.grossUsd===undefined?({...d,grossUsd:Number(d.gross||0)/32.5,taxUsd:Number(d.tax||0)/32.5,fxRate:32.5}):d);
     function persistState(){
       try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(err){}
       if(serverReady){
@@ -298,12 +300,16 @@
       }
     }
     const money = n => '฿ ' + Number(n).toLocaleString('th-TH',{maximumFractionDigits:0});
+    const moneyUsd = n => '$ ' + Number(n||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
     const formatDate = d => new Date(d).toLocaleDateString('th-TH',{day:'numeric',month:'short'});
+    const txTypeLabel = type => ({income:'รายรับจริง',expense:'รายจ่ายจริง',company_advance:'เงินบริษัทสำหรับซื้อของ',company_purchase:'ซื้อของแทนบริษัท',transfer:'โอนระหว่างบัญชี'}[type]||type);
+    const txClass = type => type==='income'?'income':type==='expense'?'expense':'neutral';
+    const txSign = type => type==='income'?'+':type==='expense'?'-':'';
     const icons = {'เงินเดือน':'↗','รายได้เสริม':'✦','อาหารและเครื่องดื่ม':'◉','เดินทาง':'⌁','ช้อปปิ้ง':'◇','บ้านและสาธารณูปโภค':'▦'};
     const colors = {'เงินเดือน':'#d8f5e5','รายได้เสริม':'#deebfb','อาหารและเครื่องดื่ม':'#ffe8d8','เดินทาง':'#f9dde1','ช้อปปิ้ง':'#eee4f9','บ้านและสาธารณูปโภค':'#e9f1d4'};
     function renderTransactions(){
       const list = document.getElementById('transactionList');
-      list.innerHTML = state.transactions.slice(0,5).map(t => `<div class="tx"><div class="tx-icon" style="background:${colors[t.category]||'#eef1ed'}">${icons[t.category]||'•'}</div><div><div class="tx-title">${t.note||t.category}</div><div class="tx-meta">${t.category} • ${formatDate(t.date)}</div></div><div class="tx-amount ${t.type}">${t.type==='income'?'+':'-'}${money(t.amount)}</div></div>`).join('');
+      list.innerHTML = state.transactions.slice(0,5).map(t => `<div class="tx"><div class="tx-icon" style="background:${colors[t.category]||'#eef1ed'}">${icons[t.category]||'•'}</div><div><div class="tx-title">${t.note||t.category}</div><div class="tx-meta">${txTypeLabel(t.type)} • ${t.category} • ${formatDate(t.date)}</div></div><div class="tx-amount ${txClass(t.type)}">${txSign(t.type)}${money(t.amount)}</div></div>`).join('');
       renderFullTransactions();
       persistState();
     }
@@ -315,7 +321,7 @@
       const body=document.getElementById('fullTransactionBody');
       const pageSize=5; const pageCount=Math.max(1,Math.ceil(rows.length/pageSize)); state.transactionPage=Math.min(state.transactionPage,pageCount);
       const visible=rows.slice((state.transactionPage-1)*pageSize,state.transactionPage*pageSize);
-      if(body) body.innerHTML=visible.length?visible.map(t=>{const i=state.transactions.indexOf(t);return `<tr><td>${formatDate(t.date)}</td><td><strong>${t.note||t.category}</strong></td><td>${t.category}</td><td><span class="pill ${t.type==='expense'?'exp':''}">${t.type==='income'?'รายรับ':'รายจ่าย'}</span></td><td class="${t.type}">${t.type==='income'?'+':'-'}${money(t.amount)}</td><td><div class="action-row"><button class="table-action" data-edit="${i}">แก้ไข</button><button class="table-action" data-delete="${i}">ลบ</button></div></td></tr>`}).join(''):'<tr><td colspan="6"><div class="empty-state">ไม่พบรายการที่ตรงกับตัวกรอง</div></td></tr>';
+      if(body) body.innerHTML=visible.length?visible.map(t=>{const i=state.transactions.indexOf(t);return `<tr><td>${formatDate(t.date)}</td><td><strong>${t.note||t.category}</strong></td><td>${t.category}</td><td><span class="pill ${txClass(t.type)==='expense'?'exp':''}">${txTypeLabel(t.type)}</span></td><td class="${txClass(t.type)}">${txSign(t.type)}${money(t.amount)}</td><td><div class="action-row"><button class="table-action" data-edit="${i}">แก้ไข</button><button class="table-action" data-delete="${i}">ลบ</button></div></td></tr>`}).join(''):'<tr><td colspan="6"><div class="empty-state">ไม่พบรายการที่ตรงกับตัวกรอง</div></td></tr>';
       const count=document.getElementById('resultCount'); if(count) count.textContent=`${rows.length} รายการ`;
       const pager=document.getElementById('transactionPagination'); if(pager) pager.innerHTML=pageCount>1?`<button class="page-btn" data-page="${state.transactionPage-1}" ${state.transactionPage===1?'disabled':''}>‹</button>${Array.from({length:pageCount},(_,i)=>`<button class="page-btn ${i+1===state.transactionPage?'active':''}" data-page="${i+1}">${i+1}</button>`).join('')}<button class="page-btn" data-page="${state.transactionPage+1}" ${state.transactionPage===pageCount?'disabled':''}>›</button>`:'';
     }
@@ -327,10 +333,10 @@
     }
     function renderStocks(){
       const tradeBody=document.getElementById('tradeBody');
-      if(tradeBody) tradeBody.innerHTML=state.trades.map(t=>`<tr><td>${formatDate(t.date)}</td><td><strong>${t.symbol}</strong></td><td><span class="pill ${t.type==='sell'?'exp':''}">${t.type==='buy'?'ซื้อ':'ขาย'}</span></td><td>${t.qty.toLocaleString('th-TH')}</td><td>${money(t.price)}</td><td class="${t.type==='buy'?'negative':'positive'}">${money(t.qty*t.price)}</td></tr>`).join('');
+      if(tradeBody) tradeBody.innerHTML=state.trades.map(t=>{const fx=Number(t.fxRate||32.5), priceUsd=Number(t.priceUsd??t.price??0), totalUsd=t.qty*priceUsd, totalThb=totalUsd*fx;return `<tr><td>${formatDate(t.date)}</td><td><strong>${t.symbol}</strong></td><td><span class="pill ${t.type==='sell'?'exp':''}">${t.type==='buy'?'ซื้อ':'ขาย'}</span></td><td>${t.qty.toLocaleString('en-US')}</td><td>${moneyUsd(priceUsd)}<div class="tx-meta">FX ${fx.toFixed(4)}</div></td><td class="${t.type==='buy'?'negative':'positive'}">${moneyUsd(totalUsd)}<div class="tx-meta">${money(totalThb)}</div></td></tr>`}).join('');
       const dividendBody=document.getElementById('dividendBody');
-      if(dividendBody) dividendBody.innerHTML=state.dividends.map(d=>{const net=d.gross-d.tax;return `<tr><td>${formatDate(d.date)}</td><td><strong>${d.symbol}</strong><div class="tx-meta">${d.note||'Dime'}</div></td><td class="positive">+${money(net)}</td></tr>`}).join('');
-      const total=state.dividends.reduce((sum,d)=>sum+d.gross-d.tax,0);
+      if(dividendBody) dividendBody.innerHTML=state.dividends.map(d=>{const gross=Number(d.grossUsd??d.gross??0), tax=Number(d.taxUsd??d.tax??0), fx=Number(d.fxRate||32.5), netUsd=gross-tax, netThb=netUsd*fx;return `<tr><td>${formatDate(d.date)}</td><td><strong>${d.symbol}</strong><div class="tx-meta">${d.note||'Dime'}</div></td><td class="positive">+${moneyUsd(netUsd)}</td><td class="positive">+${money(netThb)}<div class="tx-meta">FX ${fx.toFixed(4)}</div></td></tr>`}).join('');
+      const total=state.dividends.reduce((sum,d)=>sum+(Number(d.grossUsd??d.gross??0)-Number(d.taxUsd??d.tax??0))*Number(d.fxRate||32.5),0);
       document.getElementById('dimeDividendTotal').textContent=money(total);
       persistState();
     }
@@ -384,24 +390,26 @@
       editingIndex=index;
       document.getElementById('modalTitle').textContent=index===null?'เพิ่มรายการใหม่':'แก้ไขรายการ';
       if(index===null){document.getElementById('txForm').reset();document.getElementById('txDate').valueAsDate=new Date();}
-      else {const t=state.transactions[index];txType.value=t.type;txDate.value=t.date;txCategory.value=t.category;txAmount.value=t.amount;txNote.value=t.note||'';}
+      else {const t=state.transactions[index];txType.value=t.type;txDate.value=t.date;txCategory.value=t.category;txAmount.value=t.amount;txFromAccount.value=t.fromAccount||'ธนาคารกสิกรไทย';txToAccount.value=t.toAccount||'เงินสดในกระเป๋า';txNote.value=t.note||'';toggleTransactionFields();}
       modal.classList.add('open');
     }
     document.getElementById('addBtn').onclick=()=>openEditor();
     document.getElementById('addBtn2').onclick=()=>openEditor();
     document.getElementById('closeModal').onclick=()=>modal.classList.remove('open');
     document.getElementById('cancelModal').onclick=()=>modal.classList.remove('open');
+    function toggleTransactionFields(){const transfer=txType.value==='transfer';document.getElementById('fromAccountField').style.display=transfer?'grid':'none';document.getElementById('toAccountField').style.display=transfer?'grid':'none';}
+    txType.addEventListener('change',toggleTransactionFields); toggleTransactionFields();
     document.getElementById('txDate').valueAsDate = new Date();
-    document.getElementById('txForm').onsubmit = e => {e.preventDefault(); const item={type:txType.value,category:txCategory.value,date:txDate.value,amount:Number(txAmount.value),note:txNote.value||txCategory.value}; if(editingIndex===null) state.transactions.unshift(item); else state.transactions[editingIndex]=item; renderTransactions();populateCategoryFilter();updateTotals();modal.classList.remove('open');e.target.reset();document.getElementById('txDate').valueAsDate=new Date();showToast(editingIndex===null?'บันทึกรายการเรียบร้อยแล้ว':'แก้ไขรายการเรียบร้อยแล้ว');editingIndex=null;};
+    document.getElementById('txForm').onsubmit = e => {e.preventDefault(); const item={type:txType.value,category:txCategory.value,date:txDate.value,amount:Number(txAmount.value),fromAccount:txFromAccount.value,toAccount:txToAccount.value,note:txNote.value||txCategory.value}; if(editingIndex===null) state.transactions.unshift(item); else state.transactions[editingIndex]=item; renderTransactions();populateCategoryFilter();updateTotals();modal.classList.remove('open');e.target.reset();document.getElementById('txDate').valueAsDate=new Date();toggleTransactionFields();showToast(editingIndex===null?'บันทึกรายการเรียบร้อยแล้ว':'แก้ไขรายการเรียบร้อยแล้ว');editingIndex=null;};
     const stockModal=document.getElementById('stockModal'), dividendModal=document.getElementById('dividendModal');
     document.getElementById('addTradeBtn').onclick=()=>{document.getElementById('stockForm').reset();document.getElementById('tradeDate').valueAsDate=new Date();stockModal.classList.add('open')};
     document.getElementById('closeStockModal').onclick=()=>stockModal.classList.remove('open');
     document.getElementById('cancelStockModal').onclick=()=>stockModal.classList.remove('open');
-    document.getElementById('stockForm').onsubmit=e=>{e.preventDefault();state.trades.unshift({type:tradeType.value,date:tradeDate.value,symbol:tradeSymbol.value.toUpperCase(),qty:Number(tradeQty.value),price:Number(tradePrice.value),note:tradeNote.value});renderStocks();stockModal.classList.remove('open');showToast('บันทึกรายการซื้อขายหุ้นแล้ว')};
+    document.getElementById('stockForm').onsubmit=e=>{e.preventDefault();state.trades.unshift({type:tradeType.value,date:tradeDate.value,symbol:tradeSymbol.value.toUpperCase(),qty:Number(tradeQty.value),priceUsd:Number(tradePrice.value),fxRate:Number(tradeFxRate.value),note:tradeNote.value});renderStocks();stockModal.classList.remove('open');showToast('บันทึกรายการซื้อขายหุ้นแล้ว')};
     document.getElementById('addDividendBtn').onclick=()=>{document.getElementById('dividendForm').reset();document.getElementById('dividendDate').valueAsDate=new Date();dividendModal.classList.add('open')};
     document.getElementById('closeDividendModal').onclick=()=>dividendModal.classList.remove('open');
     document.getElementById('cancelDividendModal').onclick=()=>dividendModal.classList.remove('open');
-    document.getElementById('dividendForm').onsubmit=e=>{e.preventDefault();state.dividends.unshift({date:dividendDate.value,symbol:dividendSymbol.value.toUpperCase(),gross:Number(dividendGross.value),tax:Number(dividendTax.value||0),note:dividendNote.value||'Dime dividend'});renderStocks();dividendModal.classList.remove('open');showToast('บันทึกเงินปันผล Dime แล้ว')};
+    document.getElementById('dividendForm').onsubmit=e=>{e.preventDefault();state.dividends.unshift({date:dividendDate.value,symbol:dividendSymbol.value.toUpperCase(),grossUsd:Number(dividendGross.value),taxUsd:Number(dividendTax.value||0),fxRate:Number(dividendFxRate.value),note:dividendNote.value||'Dime dividend'});renderStocks();dividendModal.classList.remove('open');showToast('บันทึกเงินปันผล Dime แล้ว')};
     const reminderModal=document.getElementById('reminderModal'), loanModal=document.getElementById('loanModal');
     document.getElementById('addReminderBtn').onclick=()=>{document.getElementById('reminderForm').reset();document.getElementById('reminderDate').valueAsDate=new Date();reminderModal.classList.add('open')};
     document.getElementById('closeReminderModal').onclick=()=>reminderModal.classList.remove('open');
@@ -432,7 +440,12 @@
       const dateValue=get('date','Date','วันที่','วันเดือนปี')||new Date().toISOString().slice(0,10);
       let date=dateValue;
       if(typeof dateValue==='number'&&window.XLSX&&XLSX.SSF) date=XLSX.SSF.format('yyyy-mm-dd',dateValue);
-      return {type:(rawType==='รายรับ'||rawType==='income'||rawType==='รับเงิน')?'income':'expense',category:get('category','Category','หมวดหมู่','หมวด')||'อื่นๆ',note:get('note','Note','รายละเอียด','รายการ','คำอธิบาย')||'นำเข้าจาก Excel',date,amount};
+      let type='expense';
+      if(rawType==='รายรับ'||rawType==='income'||rawType==='รับเงิน') type='income';
+      else if(rawType.includes('บริษัท')&&rawType.includes('รับ')) type='company_advance';
+      else if(rawType.includes('บริษัท')&&(rawType.includes('ซื้อ')||rawType.includes('จ่าย'))) type='company_purchase';
+      else if(rawType.includes('โอน')||rawType==='transfer') type='transfer';
+      return {type,category:get('category','Category','หมวดหมู่','หมวด')||'อื่นๆ',note:get('note','Note','รายละเอียด','รายการ','คำอธิบาย')||'นำเข้าจาก Excel',date,amount,fromAccount:get('จากบัญชี','fromAccount')||'',toAccount:get('ไปยังบัญชี','toAccount')||''};
     }
     document.getElementById('fileInput').onchange = e => {
       const input=e.target, file=input.files[0]; if(!file)return;

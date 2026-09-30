@@ -186,13 +186,8 @@
           <div class="card mini-stat"><small>บัญชีทั้งหมด</small><strong>4 บัญชี</strong></div>
         </div>
         <div class="card panel">
-          <div class="panel-head"><div><h3 class="panel-title">บัญชีของฉัน</h3><p class="panel-sub">ภาพรวมยอดเงินสดและยอดค้างชำระในแต่ละบัญชี</p></div><button class="primary" id="importBtnAccounts">นำเข้า Excel</button></div>
-          <div class="account-list">
-            <div class="account"><div class="account-main"><div class="account-icon" style="background:#d8f5e5">▣</div><div><div class="account-name">ธนาคารกสิกรไทย</div><div class="account-meta">บัญชีออมทรัพย์ • ลงท้าย 6432</div></div></div><div class="account-balance">฿ 31,480</div></div>
-            <div class="account"><div class="account-main"><div class="account-icon" style="background:#deebfb">◈</div><div><div class="account-name">เงินสดในกระเป๋า</div><div class="account-meta">เงินสด</div></div></div><div class="account-balance">฿ 8,260</div></div>
-            <div class="account"><div class="account-main"><div class="account-icon" style="background:#ffe8d8">⌁</div><div><div class="account-name">TrueMoney Wallet</div><div class="account-meta">กระเป๋าเงินดิจิทัล</div></div></div><div class="account-balance">฿ 5,740</div></div>
-            <div class="account"><div class="account-main"><div class="account-icon" style="background:#f9dde1">▤</div><div><div class="account-name">บัตรเครดิต KTC</div><div class="account-meta">ยอดค้างชำระ</div></div></div><div class="account-balance negative">-฿ 7,220</div></div>
-          </div>
+          <div class="panel-head"><div><h3 class="panel-title">บัญชีของฉัน</h3><p class="panel-sub">ภาพรวมยอดเงินสดและยอดค้างชำระในแต่ละบัญชี</p></div><div class="top-actions"><button class="ghost" id="importBtnAccounts">นำเข้า Excel</button><button class="primary" id="addAccountBtn">+ เพิ่มบัญชี</button></div></div>
+          <div class="account-list" id="accountList"></div>
         </div>
       </div>
       <div class="page" id="reportsPage">
@@ -224,6 +219,9 @@
   <div class="modal" id="loanModal"><div class="modal-card"><div class="modal-head"><h3>เพิ่มเงินให้กู้ยืม</h3><button class="icon-btn" id="closeLoanModal">×</button></div>
     <form id="loanForm"><div class="form-grid"><div class="field"><label>ชื่อผู้กู้</label><input id="loanBorrower" placeholder="เช่น คุณสมชาย" required /></div><div class="field"><label>วันที่ให้กู้</label><input id="loanDate" type="date" required /></div><div class="field"><label>เงินต้น (บาท)</label><input id="loanPrincipal" type="number" min="0" step="0.01" required /></div><div class="field"><label>ดอกเบี้ยต่อปี (%)</label><input id="loanRate" type="number" min="0" step="0.01" value="5" required /></div><div class="field"><label>วันครบกำหนด</label><input id="loanDueDate" type="date" required /></div><div class="field"><label>สถานะ</label><select id="loanStatus"><option value="ค้างชำระ">ค้างชำระ</option><option value="ชำระบางส่วน">ชำระบางส่วน</option><option value="ชำระแล้ว">ชำระแล้ว</option></select></div><div class="field full"><label>หมายเหตุ</label><input id="loanNote" placeholder="ข้อตกลงหรือรายละเอียดเพิ่มเติม" /></div></div><div class="modal-foot"><button type="button" class="ghost" id="cancelLoanModal">ยกเลิก</button><button class="primary" type="submit">บันทึกเงินให้กู้</button></div></form>
   </div></div>
+  <div class="modal" id="accountModal"><div class="modal-card"><div class="modal-head"><h3>เพิ่มบัญชี</h3><button class="icon-btn" id="closeAccountModal">×</button></div>
+    <form id="accountForm"><div class="form-grid"><div class="field full"><label>ชื่อบัญชี</label><input id="accountName" placeholder="เช่น ธนาคารกรุงเทพ" required /></div><div class="field"><label>ประเภทบัญชี</label><select id="accountType"><option>บัญชีธนาคาร</option><option>เงินสด</option><option>กระเป๋าเงินดิจิทัล</option><option>บัตรเครดิต</option><option>บัญชีบริษัท</option></select></div><div class="field"><label>ยอดเริ่มต้น (บาท)</label><input id="accountBalance" type="number" step="0.01" value="0" required /></div><div class="field full"><label>หมายเหตุ</label><input id="accountMeta" placeholder="เช่น ลงท้าย 1234" /></div></div><div class="modal-foot"><button type="button" class="ghost" id="cancelAccountModal">ยกเลิก</button><button class="primary" type="submit">บันทึกบัญชี</button></div></form>
+  </div></div>
   <div class="toast" id="toast"></div>
   <script>
     const state = {
@@ -254,6 +252,12 @@
         {borrower:'คุณสมชาย',date:'2026-08-12',principal:30000,rate:5,dueDate:'2026-12-12',status:'ค้างชำระ',note:'สัญญา 4 เดือน'},
         {borrower:'คุณวราภรณ์',date:'2026-09-01',principal:12000,rate:3,dueDate:'2026-11-01',status:'ชำระบางส่วน',note:'แบ่งชำระ 2 งวด'}
       ],
+      accounts:[
+        {name:'ธนาคารกสิกรไทย',meta:'บัญชีออมทรัพย์ • ลงท้าย 6432',balance:31480,icon:'▣',color:'#d8f5e5'},
+        {name:'เงินสดในกระเป๋า',meta:'เงินสด',balance:8260,icon:'◈',color:'#deebfb'},
+        {name:'TrueMoney Wallet',meta:'กระเป๋าเงินดิจิทัล',balance:5740,icon:'⌁',color:'#ffe8d8'},
+        {name:'บัตรเครดิต KTC',meta:'ยอดค้างชำระ',balance:-7220,icon:'▤',color:'#f9dde1'}
+      ],
       transactionPage:1
     };
     const STORAGE_KEY='moneydee-state-v1';
@@ -261,7 +265,7 @@
     try{
       const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');
       if(saved){
-        ['transactions','trades','dividends','reminders','loans'].forEach(key=>{
+        ['transactions','trades','dividends','reminders','loans','accounts'].forEach(key=>{
           if(Array.isArray(saved[key])) state[key]=saved[key];
         });
         if(Number.isInteger(saved.transactionPage)) state.transactionPage=saved.transactionPage;
@@ -292,7 +296,7 @@
           await fetch('/api/state',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({state})});
         }
         serverReady=true;
-        populateCategoryFilter();renderTransactions();renderStocks();renderReminders();renderLoans();updateTotals();
+        populateCategoryFilter();renderTransactions();renderStocks();renderReminders();renderLoans();renderAccounts();updateTotals();
         showToast('เชื่อมต่อฐานข้อมูลกลางแล้ว');
       }catch(err){
         serverReady=false;
@@ -367,6 +371,12 @@
       document.getElementById('loanPrincipalTotal').textContent=money(principal); document.getElementById('loanInterestTotal').textContent=money(interest); document.getElementById('loanCount').textContent=`${state.loans.length} รายการ`;
       persistState();
     }
+    function renderAccounts(){
+      const list=document.getElementById('accountList'); if(!list) return;
+      list.innerHTML=state.accounts.map((a,i)=>`<div class="account"><div class="account-main"><div class="account-icon" style="background:${a.color||'#eef1ed'}">${a.icon||'฿'}</div><div><div class="account-name">${a.name}</div><div class="account-meta">${a.meta||a.type||''}</div></div></div><div class="account-balance ${a.balance<0?'negative':''}">${money(a.balance)}</div></div>`).join('');
+      ['txFromAccount','txToAccount'].forEach(id=>{const el=document.getElementById(id);if(!el)return;const current=el.value;el.innerHTML=state.accounts.map(a=>`<option>${a.name}</option>`).join('');if(state.accounts.some(a=>a.name===current))el.value=current;});
+      persistState();
+    }
     function updateTotals(){
       const income = state.transactions.filter(t=>t.type==='income').reduce((a,t)=>a+t.amount,0);
       const expense = state.transactions.filter(t=>t.type==='expense').reduce((a,t)=>a+t.amount,0);
@@ -422,6 +432,11 @@
     document.getElementById('cancelLoanModal').onclick=()=>loanModal.classList.remove('open');
     document.getElementById('loanForm').onsubmit=e=>{e.preventDefault();state.loans.unshift({borrower:loanBorrower.value,date:loanDate.value,principal:Number(loanPrincipal.value),rate:Number(loanRate.value),dueDate:loanDueDate.value,status:loanStatus.value,note:loanNote.value});renderLoans();loanModal.classList.remove('open');showToast('บันทึกเงินให้กู้แล้ว')};
     document.getElementById('loanBody').addEventListener('click',e=>{const b=e.target.closest('[data-loan-delete]');if(b){state.loans.splice(Number(b.dataset.loanDelete),1);renderLoans();showToast('ลบรายการกู้ยืมแล้ว')}});
+    const accountModal=document.getElementById('accountModal');
+    document.getElementById('addAccountBtn').onclick=()=>{document.getElementById('accountForm').reset();document.getElementById('accountBalance').value=0;accountModal.classList.add('open')};
+    document.getElementById('closeAccountModal').onclick=()=>accountModal.classList.remove('open');
+    document.getElementById('cancelAccountModal').onclick=()=>accountModal.classList.remove('open');
+    document.getElementById('accountForm').onsubmit=e=>{e.preventDefault();const type=accountType.value;const icon=type==='เงินสด'?'◈':type==='บัตรเครดิต'?'▤':type==='กระเป๋าเงินดิจิทัล'?'⌁':'▣';const color=type==='เงินสด'?'#deebfb':type==='บัตรเครดิต'?'#f9dde1':type==='กระเป๋าเงินดิจิทัล'?'#ffe8d8':'#d8f5e5';state.accounts.push({name:accountName.value,meta:accountMeta.value||type,balance:Number(accountBalance.value||0),icon,color});renderAccounts();accountModal.classList.remove('open');showToast('เพิ่มบัญชีแล้ว')};
     document.getElementById('importBtn').onclick=()=>document.getElementById('fileInput').click();
     document.getElementById('importBtnAccounts').onclick=()=>document.getElementById('fileInput').click();
     document.getElementById('importBtnReports').onclick=()=>document.getElementById('fileInput').click();
@@ -479,7 +494,7 @@
     const cashCtx=document.getElementById('cashflowChart');
     new Chart(cashCtx,{type:'line',data:{labels:['เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.'],datasets:[{label:'รายรับ',data:[48000,52000,49500,61000,55800,62450],borderColor:'#3f9d72',backgroundColor:'rgba(63,157,114,.12)',fill:true,tension:.38,pointRadius:3,pointBackgroundColor:'#fff',pointBorderWidth:2},{label:'รายจ่าย',data:[32000,28400,30100,26500,29800,28740],borderColor:'#ff8b5a',backgroundColor:'rgba(255,139,90,.05)',fill:true,tension:.38,pointRadius:3,pointBackgroundColor:'#fff',pointBorderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:'#8a9998',font:{family:'Noto Sans Thai'}}},y:{grid:{color:'#edf0ed'},ticks:{color:'#8a9998',callback:v=>'฿'+(v/1000)+'k'}}}}});
     new Chart(document.getElementById('spendChart'),{type:'doughnut',data:{labels:['บ้านและสาธารณูปโภค','อาหารและเครื่องดื่ม','ช้อปปิ้ง','เดินทาง','อื่นๆ'],datasets:[{data:[34,26,18,12,10],backgroundColor:['#3f9d72','#ff8b5a','#6ba7db','#ef8b97','#d8dcca'],borderWidth:0}]},options:{cutout:'70%',plugins:{legend:{position:'bottom',labels:{usePointStyle:true,pointStyle:'circle',padding:14,boxWidth:7,font:{family:'Noto Sans Thai',size:10}}}}}});
-    populateCategoryFilter();renderTransactions();renderStocks();renderReminders();renderLoans();updateTotals();
+    populateCategoryFilter();renderTransactions();renderStocks();renderReminders();renderLoans();renderAccounts();updateTotals();
     const isGitHubPages=location.hostname.endsWith('github.io');
     if(!isGitHubPages) hydrateFromDatabase();
   </script>

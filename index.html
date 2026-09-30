@@ -121,7 +121,7 @@
       </section>
 
       <section class="grid lower-grid">
-        <div class="card panel"><div class="panel-head"><div><h3 class="panel-title">บัญชีของฉัน</h3><p class="panel-sub">ยอดคงเหลือตามบัญชี</p></div><button class="view-all">จัดการบัญชี →</button></div><div class="account-list">
+        <div class="card panel"><div class="panel-head"><div><h3 class="panel-title">บัญชีของฉัน</h3><p class="panel-sub">ยอดคงเหลือตามบัญชี</p></div><button class="view-all" id="manageAccountsBtn">จัดการบัญชี →</button></div><div class="account-list">
           <div class="account"><div class="account-main"><div class="account-icon" style="background:#d8f5e5">▣</div><div><div class="account-name">ธนาคารกสิกรไทย</div><div class="account-meta">บัญชีออมทรัพย์ • ลงท้าย 6432</div></div></div><div class="account-balance">฿ 31,480</div></div>
           <div class="account"><div class="account-main"><div class="account-icon" style="background:#deebfb">◈</div><div><div class="account-name">เงินสดในกระเป๋า</div><div class="account-meta">เงินสด</div></div></div><div class="account-balance">฿ 8,260</div></div>
           <div class="account"><div class="account-main"><div class="account-icon" style="background:#ffe8d8">⌁</div><div><div class="account-name">TrueMoney Wallet</div><div class="account-meta">กระเป๋าเงินดิจิทัล</div></div></div><div class="account-balance">฿ 5,740</div></div>
@@ -487,6 +487,7 @@
       if(file.name.toLowerCase().endsWith('.csv')) reader.readAsArrayBuffer(file); else reader.readAsArrayBuffer(file);
     };
     document.getElementById('viewAllBtn').onclick=()=>switchPage('transactionsPage');
+    document.getElementById('manageAccountsBtn').onclick=()=>switchPage('accountsPage');
     function switchPage(pageId){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===pageId));document.querySelectorAll('.nav button[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===pageId));}
     document.querySelectorAll('.nav button[data-page]').forEach(b=>b.onclick=()=>switchPage(b.dataset.page));
     ['searchInput','typeFilter','categoryFilter'].forEach(id=>document.getElementById(id)?.addEventListener(id==='searchInput'?'input':'change',renderFullTransactions));

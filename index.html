@@ -6,6 +6,15 @@
   <title>เงินดี • ตัวติดตามรายรับรายจ่าย</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script>
+    window.addEventListener('error', function (event) {
+      if (event.target && event.target.tagName === 'SCRIPT' && event.target.src.includes('xlsx@')) {
+        var fallback = document.createElement('script');
+        fallback.src = 'https://unpkg.com/xlsx@0.18.5/dist/xlsx.full.min.js';
+        document.head.appendChild(fallback);
+      }
+    }, true);
+  </script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+Thai:wght@400;500;600;700;800&display=swap');
     :root{
@@ -408,7 +417,46 @@
     document.getElementById('importBtn').onclick=()=>document.getElementById('fileInput').click();
     document.getElementById('importBtnAccounts').onclick=()=>document.getElementById('fileInput').click();
     document.getElementById('importBtnReports').onclick=()=>document.getElementById('fileInput').click();
-    document.getElementById('fileInput').onchange = e => {const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=ev=>{try{const wb=XLSX.read(ev.target.result,{type:'array'});const ws=wb.Sheets[wb.SheetNames[0]];const rows=XLSX.utils.sheet_to_json(ws);let added=0;rows.forEach(r=>{const amount=Number(r.amount||r.Amount||r['จำนวนเงิน']||r['ยอดเงิน']||0);if(amount){state.transactions.unshift({type:((r.type||r.Type||r['ประเภท'])==='รายรับ'||(r.type||r.Type||r['ประเภท'])==='income')?'income':'expense',category:r.category||r.Category||r['หมวดหมู่']||'อื่นๆ',note:r.note||r.Note||r['รายละเอียด']||'นำเข้าจาก Excel',date:r.date||r.Date||r['วันที่']||new Date().toISOString().slice(0,10),amount});added++;}});renderTransactions();populateCategoryFilter();updateTotals();showToast(`นำเข้า ${added} รายการจาก Excel`)}catch(err){showToast('ไม่สามารถอ่านไฟล์นี้ได้')}};reader.readAsArrayBuffer(file)};
+    function parseCsvText(text){
+      const lines=text.replace(/^\uFEFF/,'').split(/\r?\n/).filter(Boolean);
+      if(!lines.length) return [];
+      const split=line=>{const out=[];let cell='',quoted=false;for(let i=0;i<line.length;i++){const ch=line[i];if(ch==='"'&&line[i+1]==='"'){cell+='"';i++;continue}if(ch==='"'){quoted=!quoted;continue}if(ch===','&&!quoted){out.push(cell.trim());cell='';continue}cell+=ch}out.push(cell.trim());return out};
+      const headers=split(lines[0]).map(h=>h.toLowerCase());
+      return lines.slice(1).map(line=>{const values=split(line), row={};headers.forEach((h,i)=>row[h]=values[i]||'');return row});
+    }
+    function normalizeImportedRow(r){
+      const get=(...keys)=>{for(const key of keys){if(r[key]!==undefined&&r[key]!==null&&String(r[key]).trim()!=='')return r[key]}return ''};
+      const rawAmount=get('amount','Amount','จำนวนเงิน','ยอดเงิน','จำนวนเงิน (บาท)','รายรับ','รายจ่าย');
+      const amount=Number(String(rawAmount).replace(/[,฿\s]/g,''));
+      const rawType=String(get('type','Type','ประเภท','ประเภทการทำรายการ')).trim().toLowerCase();
+      const dateValue=get('date','Date','วันที่','วันเดือนปี')||new Date().toISOString().slice(0,10);
+      let date=dateValue;
+      if(typeof dateValue==='number'&&window.XLSX&&XLSX.SSF) date=XLSX.SSF.format('yyyy-mm-dd',dateValue);
+      return {type:(rawType==='รายรับ'||rawType==='income'||rawType==='รับเงิน')?'income':'expense',category:get('category','Category','หมวดหมู่','หมวด')||'อื่นๆ',note:get('note','Note','รายละเอียด','รายการ','คำอธิบาย')||'นำเข้าจาก Excel',date,amount};
+    }
+    document.getElementById('fileInput').onchange = e => {
+      const input=e.target, file=input.files[0]; if(!file)return;
+      const reader=new FileReader();
+      reader.onload=ev=>{
+        try{
+          let rows=[];
+          if(file.name.toLowerCase().endsWith('.csv')) rows=parseCsvText(new TextDecoder('utf-8').decode(ev.target.result));
+          else {
+            if(!window.XLSX) throw new Error('ไม่พบตัวอ่าน Excel');
+            const wb=XLSX.read(ev.target.result,{type:'array',cellDates:true});
+            const ws=wb.Sheets[wb.SheetNames[0]];
+            rows=XLSX.utils.sheet_to_json(ws,{defval:''});
+          }
+          let added=0;
+          rows.map(normalizeImportedRow).forEach(item=>{if(Number.isFinite(item.amount)&&item.amount>0){state.transactions.unshift(item);added++;}});
+          renderTransactions();populateCategoryFilter();updateTotals();persistState();
+          showToast(added?`นำเข้า ${added} รายการจาก Excel แล้ว`:'ไม่พบแถวที่มีจำนวนเงินในไฟล์');
+        }catch(err){showToast(err.message||'ไม่สามารถอ่านไฟล์นี้ได้');}
+        input.value='';
+      };
+      reader.onerror=()=>{showToast('อ่านไฟล์ไม่สำเร็จ');input.value='';};
+      if(file.name.toLowerCase().endsWith('.csv')) reader.readAsArrayBuffer(file); else reader.readAsArrayBuffer(file);
+    };
     document.getElementById('viewAllBtn').onclick=()=>switchPage('transactionsPage');
     function switchPage(pageId){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===pageId));document.querySelectorAll('.nav button[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===pageId));}
     document.querySelectorAll('.nav button[data-page]').forEach(b=>b.onclick=()=>switchPage(b.dataset.page));

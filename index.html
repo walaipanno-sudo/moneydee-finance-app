@@ -381,7 +381,8 @@
     new Chart(cashCtx,{type:'line',data:{labels:['เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.'],datasets:[{label:'รายรับ',data:[48000,52000,49500,61000,55800,62450],borderColor:'#3f9d72',backgroundColor:'rgba(63,157,114,.12)',fill:true,tension:.38,pointRadius:3,pointBackgroundColor:'#fff',pointBorderWidth:2},{label:'รายจ่าย',data:[32000,28400,30100,26500,29800,28740],borderColor:'#ff8b5a',backgroundColor:'rgba(255,139,90,.05)',fill:true,tension:.38,pointRadius:3,pointBackgroundColor:'#fff',pointBorderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:'#8a9998',font:{family:'Noto Sans Thai'}}},y:{grid:{color:'#edf0ed'},ticks:{color:'#8a9998',callback:v=>'฿'+(v/1000)+'k'}}}}});
     new Chart(document.getElementById('spendChart'),{type:'doughnut',data:{labels:['บ้านและสาธารณูปโภค','อาหารและเครื่องดื่ม','ช้อปปิ้ง','เดินทาง','อื่นๆ'],datasets:[{data:[34,26,18,12,10],backgroundColor:['#3f9d72','#ff8b5a','#6ba7db','#ef8b97','#d8dcca'],borderWidth:0}]},options:{cutout:'70%',plugins:{legend:{position:'bottom',labels:{usePointStyle:true,pointStyle:'circle',padding:14,boxWidth:7,font:{family:'Noto Sans Thai',size:10}}}}}});
     populateCategoryFilter();renderTransactions();renderStocks();renderReminders();renderLoans();updateTotals();
-    hydrateFromDatabase();
+    const isGitHubPages=location.hostname.endsWith('github.io');
+    if(!isGitHubPages) hydrateFromDatabase();
   </script>
 </body>
 </html>

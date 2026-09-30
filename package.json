@@ -1,0 +1,13 @@
+{
+  "name": "moneydee-finance-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Moneydee personal finance tracker with SQLite persistence",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=22.5.0"
+  }
+}

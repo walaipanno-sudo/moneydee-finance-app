@@ -1,0 +1,4 @@
+moneydee.sqlite
+node_modules/
+.env
+*.log

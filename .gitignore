@@ -2,3 +2,4 @@ moneydee.sqlite
 node_modules/
 .env
 *.log
+moneydee-app.zip

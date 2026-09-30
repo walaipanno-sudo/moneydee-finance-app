@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: moneydee-finance-app
+    runtime: node
+    plan: starter
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      - key: DB_PATH
+        value: /var/data/moneydee.sqlite
+    disk:
+      name: moneydee-data
+      mountPath: /var/data
+      sizeGB: 1

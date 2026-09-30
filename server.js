@@ -6,7 +6,7 @@ import { DatabaseSync } from "node:sqlite";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const port = Number(process.env.PORT || 3000);
-const dbPath = path.join(__dirname, "moneydee.sqlite");
+const dbPath = process.env.DB_PATH || path.join(__dirname, "moneydee.sqlite");
 const db = new DatabaseSync(dbPath);
 
 db.exec(`

@@ -79,8 +79,8 @@
         <button data-page="stocksPage"><span class="icon">↗</span><span>หุ้น & ปันผล</span></button>
         <button data-page="calendarPage"><span class="icon">□</span><span>ปฏิทินเตือนความจำ</span></button>
         <button data-page="loansPage"><span class="icon">฿</span><span>เงินให้กู้ยืม</span></button>
-        <button><span class="icon">▣</span><span>บัญชีของฉัน</span></button>
-        <button><span class="icon">◫</span><span>รายงาน</span></button>
+        <button data-page="accountsPage"><span class="icon">▣</span><span>บัญชีของฉัน</span></button>
+        <button data-page="reportsPage"><span class="icon">◫</span><span>รายงาน</span></button>
       </nav>
       <div class="sidebar-foot"><small>ยอดคงเหลือรวม</small><strong id="sideBalance">฿ 48,260</strong></div>
     </aside>
@@ -168,6 +168,33 @@
         <div class="card panel">
           <div class="panel-head"><div><h3 class="panel-title">เงินให้กู้ยืมและดอกเบี้ย</h3><p class="panel-sub">ติดตามลูกหนี้ เงินต้น อัตราดอกเบี้ย และวันครบกำหนด</p></div><button class="primary" id="addLoanBtn">+ เพิ่มเงินให้กู้</button></div>
           <div class="table-wrap"><table class="table full-table"><thead><tr><th>ผู้กู้</th><th>วันที่ให้กู้</th><th>เงินต้น</th><th>ดอกเบี้ย/ปี</th><th>คาดว่าดอกเบี้ย</th><th>ครบกำหนด</th><th>สถานะ</th><th></th></tr></thead><tbody id="loanBody"></tbody></table></div>
+        </div>
+      </div>
+      <div class="page" id="accountsPage">
+        <div class="grid mini-stats">
+          <div class="card mini-stat"><small>สินทรัพย์ในบัญชี</small><strong>฿ 45,480</strong></div>
+          <div class="card mini-stat"><small>หนี้สินคงค้าง</small><strong class="negative">฿ 7,220</strong></div>
+          <div class="card mini-stat"><small>บัญชีทั้งหมด</small><strong>4 บัญชี</strong></div>
+        </div>
+        <div class="card panel">
+          <div class="panel-head"><div><h3 class="panel-title">บัญชีของฉัน</h3><p class="panel-sub">ภาพรวมยอดเงินสดและยอดค้างชำระในแต่ละบัญชี</p></div><button class="primary" id="importBtnAccounts">นำเข้า Excel</button></div>
+          <div class="account-list">
+            <div class="account"><div class="account-main"><div class="account-icon" style="background:#d8f5e5">▣</div><div><div class="account-name">ธนาคารกสิกรไทย</div><div class="account-meta">บัญชีออมทรัพย์ • ลงท้าย 6432</div></div></div><div class="account-balance">฿ 31,480</div></div>
+            <div class="account"><div class="account-main"><div class="account-icon" style="background:#deebfb">◈</div><div><div class="account-name">เงินสดในกระเป๋า</div><div class="account-meta">เงินสด</div></div></div><div class="account-balance">฿ 8,260</div></div>
+            <div class="account"><div class="account-main"><div class="account-icon" style="background:#ffe8d8">⌁</div><div><div class="account-name">TrueMoney Wallet</div><div class="account-meta">กระเป๋าเงินดิจิทัล</div></div></div><div class="account-balance">฿ 5,740</div></div>
+            <div class="account"><div class="account-main"><div class="account-icon" style="background:#f9dde1">▤</div><div><div class="account-name">บัตรเครดิต KTC</div><div class="account-meta">ยอดค้างชำระ</div></div></div><div class="account-balance negative">-฿ 7,220</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="page" id="reportsPage">
+        <div class="grid mini-stats">
+          <div class="card mini-stat"><small>รายรับรวม</small><strong id="reportIncome">฿ 0</strong></div>
+          <div class="card mini-stat"><small>รายจ่ายรวม</small><strong id="reportExpense" class="negative">฿ 0</strong></div>
+          <div class="card mini-stat"><small>เงินเหลือสุทธิ</small><strong id="reportNet" class="positive">฿ 0</strong></div>
+        </div>
+        <div class="grid stock-grid">
+          <div class="card panel"><div class="panel-head"><div><h3 class="panel-title">สรุปตามหมวดหมู่</h3><p class="panel-sub">รายจ่ายจากรายการที่บันทึกไว้</p></div></div><div class="table-wrap"><table class="table"><thead><tr><th>หมวดหมู่</th><th>จำนวนรายการ</th><th>รวม</th></tr></thead><tbody id="reportCategoryBody"></tbody></table></div></div>
+          <div class="card panel"><div class="panel-head"><div><h3 class="panel-title">สำรองข้อมูล</h3><p class="panel-sub">นำเข้าไฟล์ Excel เพื่อเพิ่มรายการจำนวนมาก</p></div></div><button class="primary" id="importBtnReports">เลือกไฟล์ Excel</button><p class="panel-sub" style="margin-top:14px">รองรับ .xlsx, .xls และ .csv โดยระบบจะอ่านชีตแรกและจับคู่คอลัมน์วันที่ หมวดหมู่ รายละเอียด ประเภท และจำนวนเงิน</p></div>
         </div>
       </div>
     </main>
@@ -331,6 +358,15 @@
       document.getElementById('incomeTotal').textContent=money(income);
       document.getElementById('expenseTotal').textContent=money(expense);
       document.getElementById('savingRate').textContent = income ? Math.round((income-expense)/income*100)+'%' : '0%';
+      const reportIncome=document.getElementById('reportIncome'); if(reportIncome) reportIncome.textContent=money(income);
+      const reportExpense=document.getElementById('reportExpense'); if(reportExpense) reportExpense.textContent=money(expense);
+      const reportNet=document.getElementById('reportNet'); if(reportNet) reportNet.textContent=money(income-expense);
+      const categoryBody=document.getElementById('reportCategoryBody');
+      if(categoryBody){
+        const groups={};
+        state.transactions.filter(t=>t.type==='expense').forEach(t=>{groups[t.category]??={count:0,total:0};groups[t.category].count++;groups[t.category].total+=t.amount});
+        categoryBody.innerHTML=Object.entries(groups).sort((a,b)=>b[1].total-a[1].total).map(([cat,v])=>`<tr><td><strong>${cat}</strong></td><td>${v.count}</td><td class="negative">${money(v.total)}</td></tr>`).join('')||'<tr><td colspan="3"><div class="empty-state">ยังไม่มีรายจ่าย</div></td></tr>';
+      }
     }
     function showToast(text){const el=document.getElementById('toast');el.textContent=text;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2400)}
     const modal = document.getElementById('modal');
@@ -370,7 +406,9 @@
     document.getElementById('loanForm').onsubmit=e=>{e.preventDefault();state.loans.unshift({borrower:loanBorrower.value,date:loanDate.value,principal:Number(loanPrincipal.value),rate:Number(loanRate.value),dueDate:loanDueDate.value,status:loanStatus.value,note:loanNote.value});renderLoans();loanModal.classList.remove('open');showToast('บันทึกเงินให้กู้แล้ว')};
     document.getElementById('loanBody').addEventListener('click',e=>{const b=e.target.closest('[data-loan-delete]');if(b){state.loans.splice(Number(b.dataset.loanDelete),1);renderLoans();showToast('ลบรายการกู้ยืมแล้ว')}});
     document.getElementById('importBtn').onclick=()=>document.getElementById('fileInput').click();
-    document.getElementById('fileInput').onchange = e => {const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=ev=>{try{const wb=XLSX.read(ev.target.result,{type:'array'});const ws=wb.Sheets[wb.SheetNames[0]];const rows=XLSX.utils.sheet_to_json(ws);let added=0;rows.forEach(r=>{const amount=Number(r.amount||r.Amount||r['จำนวนเงิน']||r['ยอดเงิน']||0);if(amount){state.transactions.unshift({type:(r.type||r.Type||r['ประเภท']==='รายรับ'?'income':'expense'),category:r.category||r.Category||r['หมวดหมู่']||'อื่นๆ',note:r.note||r.Note||r['รายละเอียด']||'นำเข้าจาก Excel',date:r.date||r.Date||r['วันที่']||new Date().toISOString().slice(0,10),amount});added++;}});renderTransactions();updateTotals();showToast(`นำเข้า ${added} รายการจาก Excel`)}catch(err){showToast('ไม่สามารถอ่านไฟล์นี้ได้')}};reader.readAsArrayBuffer(file)};
+    document.getElementById('importBtnAccounts').onclick=()=>document.getElementById('fileInput').click();
+    document.getElementById('importBtnReports').onclick=()=>document.getElementById('fileInput').click();
+    document.getElementById('fileInput').onchange = e => {const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=ev=>{try{const wb=XLSX.read(ev.target.result,{type:'array'});const ws=wb.Sheets[wb.SheetNames[0]];const rows=XLSX.utils.sheet_to_json(ws);let added=0;rows.forEach(r=>{const amount=Number(r.amount||r.Amount||r['จำนวนเงิน']||r['ยอดเงิน']||0);if(amount){state.transactions.unshift({type:((r.type||r.Type||r['ประเภท'])==='รายรับ'||(r.type||r.Type||r['ประเภท'])==='income')?'income':'expense',category:r.category||r.Category||r['หมวดหมู่']||'อื่นๆ',note:r.note||r.Note||r['รายละเอียด']||'นำเข้าจาก Excel',date:r.date||r.Date||r['วันที่']||new Date().toISOString().slice(0,10),amount});added++;}});renderTransactions();populateCategoryFilter();updateTotals();showToast(`นำเข้า ${added} รายการจาก Excel`)}catch(err){showToast('ไม่สามารถอ่านไฟล์นี้ได้')}};reader.readAsArrayBuffer(file)};
     document.getElementById('viewAllBtn').onclick=()=>switchPage('transactionsPage');
     function switchPage(pageId){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===pageId));document.querySelectorAll('.nav button[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===pageId));}
     document.querySelectorAll('.nav button[data-page]').forEach(b=>b.onclick=()=>switchPage(b.dataset.page));
